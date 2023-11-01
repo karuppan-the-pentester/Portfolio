@@ -1,22 +1,28 @@
 clc;
+
 clear all;
 close all;
 x=input("enter the input sequence x(n) ");
 h=input("enter the input sequence h(n)");
 y=conv(x,h);
+
 subplot(2,2,1);
 stem(x);
 disp(x);
+
 subplot(2,2,2);
 stem(h);
 disp(h);
+
 subplot(2,2,3);
 stem(y);
 disp(y);
+
 X=fft(x);
 H=fft(h);
 Z=X.*H;
 J=ifft(Z);
+
 subplot(2,2,4);
 stem(J);
 disp(J);

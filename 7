@@ -1,25 +1,32 @@
 clc;
 clear all;
 close all;
-f1=1000;
-fs=5000;
-t=0:1/fs:0.3;
-x=sin(2*pi*f1*t)+rand(size(t));
-subplot(2,2,1);
+
+f1 = 1000;
+fs = 5000;
+
+t = 0:1 / fs:0.3;
+x = sin(2 * pi * f1 * t) + rand(size(t));
+
+subplot(2, 2, 1);
 plot(x);
 xlabel('time');
 ylabel('amplitude');
+
 title('input sinusoidal signal with random noise');
+
 %periodogram signal
-[pxx,w]=periodogram(x,'onesided',128,fs);
-subplot(2,2,2);
-plot(w,pxx);
+[pxx, w] = periodogram(x, 'onesided', 128, fs);
+
+subplot(2, 2, 2);
+plot(w, pxx);
 xlabel('frequency');
 ylabel('amplitude');
 title('periodogram specturm for NFFT=128');
-[pxx,w]=periodogram(x,'onesided',1024,fs);
-subplot(2,2,3);
-plot(w,pxx);
+[pxx, w] = periodogram(x, 'onesided', 1024, fs);
+
+subplot(2, 2, 3);
+plot(w, pxx);
 xlabel('frequency');
 ylabel('amplitude');
 title('periodogram spectrum for NFFT=1024');

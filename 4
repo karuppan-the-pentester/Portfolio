@@ -1,57 +1,69 @@
 clc;
 clear all;
 close all;
-fp=input('pass band freqency');
-fs=input('stop band frequency');
-f=input('sampling frequency');
-n=input('order of the filter');
-wp=2*fp/f;
-ws=2*fs/f;
-m=n+1;
-choice=input('1=>rectangular,2=>hamming,3=>hanning,4=>blackman,5=>kaiser');
+
+fp = input('pass band freqency');
+fs = input('stop band frequency');
+f = input('sampling frequency');
+n = input('order of the filter');
+
+wp = 2 * fp / f;
+ws = 2 * fs / f;
+m = n + 1;
+
+choice = input('1=>rectangular,2=>hamming,3=>hanning,4=>blackman,5=>kaiser');
+
 switch (choice);
     case 1
-w=rectwin(n);
+        w = rectwin(n);
     case 2
-w=hamming(n);
+        w = hamming(n);
     case 3
-w=hanning(n);
+        w = hanning(n);
     case 4
-w=blackman(n);
+        w = blackman(n);
     case 5
-w=kaiser(n);
+        w = kaiser(n);
 end
-b=fir1(n,wp);
-[h,o]=freqz(b,1,128);
-m=20*log10(abs(h)); 
-subplot (2,2,1);
-plot(o/pi,m);
+
+b = fir1(n, wp);
+[h, o] = freqz(b, 1, 128);
+m = 20 * log10(abs(h));
+
+subplot (2, 2, 1);
+plot(o / pi, m);
 xlabel('noramlized frequency');
 ylabel('magnitude in db');
 title('LPF');
-b=fir1(n,wp,'high');
-[h,o]=freqz(b,1,128);
-m=20*log10(abs(h));
-subplot (2,2,2);
-plot(o/pi,m);
+
+b = fir1(n, wp, 'high');
+[h, o] = freqz(b, 1, 128);
+m = 20 * log10(abs(h));
+
+subplot (2, 2, 2);
+plot(o / pi, m);
 xlabel('normalized frequency');
 ylabel('magnitude in db');
 title('HPF');
-wn=[wp ws];
-b=fir1(n,wp);
-[h,o]=freqz(b,1,128);
-m=20*log10(abs(h));
-subplot(2,2,3);
-plot(o/pi,m);
+
+wn = [wp ws];
+b = fir1(n, wp);
+[h, o] = freqz(b, 1, 128);
+m = 20 * log10(abs(h));
+
+subplot(2, 2, 3);
+plot(o / pi, m);
 xlabel('normalized frequency');
 ylabel('magnitude in db');
 title('BPF');
-wn=[wp ws];
-b=fir1(n,wp,'stop');
-[h,o]=freqz(b,1,128);
-m=20*log10(abs(h));
-subplot (2,2,4);
-plot(o/pi,m);
+
+wn = [wp ws];
+b = fir1(n, wp, 'stop');
+[h, o] = freqz(b, 1, 128);
+m = 20 * log10(abs(h));
+
+subplot (2, 2, 4);
+plot(o / pi, m);
 xlabel('normalized frequency');
 ylabel('magnitude in db');
 title('BSF');
