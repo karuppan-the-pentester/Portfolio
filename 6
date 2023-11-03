@@ -1,62 +1,49 @@
-clc;
-clear all;
-close all;
+#define LS 40    //Left motor
+#define RS 39    //Right motor
+#define LD 28    //Left motor direction pin
+#define RD 29    //Right motor direction pin
 
-N = 31;
-Nord = N - 1;
-L = 3;
+intspeedr = 0, speedl = 0; //sets the speed of motor using PWM
+intldir = 0, rdir = 0;  // 0 forward // 1 backward
+void setup() {
+  // put your setup code here, to run once:
+Serial.begin(9600);
+Serial1.begin(9600);
+pinMode(LD, OUTPUT);
+pinMode(RD, OUTPUT);
+}
 
-r01 = 0.2;
-h1 = firnyquist(Nord, L, r01);
+void loop() {
+char c = 0;
+  // put your main code here, to run repeatedly: 
+if(Serial1.available()){
+    c = Serial1.read();
+Serial.println(c);
+  }
+switch(c)
+  {
+case 'F' :ldir = rdir = 0;  //Forward Movement
+speedr = 50;
+speedl = 50;
+break;
 
-r02 = 0.4;
-h2 = firnyquist(Nord, L, r02);
+case 'B' :ldir = rdir = 1;  //Backward Movement
+speedr = 50;
+speedl = 50;
+break;
 
-r03 = 0.6;
-h3 = firnyquist(Nord, L, r03);
+case 'R' :ldir = 0;  //Move towards left
+speedl = 50;
+speedr = 0;
+break;
 
-figure (1);
-
-subplot(3, 1, 1);
-stem(0:N - 1, h1, 'b');
-axis([0 30, -0.2, 0.5]);
-ylabel('h-1(h)');
-legend('h1');
-
-subplot(3, 1, 2);
-stem(0:N - 1, h2, 'k');
-axis([0 30, 0.2, 0.5]);
-ylabel('h-2(h)');
-legend('h2');
-
-subplot(3, 1, 3);
-stem(0:N - 1, h3, 'r');
-axis([0 30, 0.2, 0.5]);
-ylabel('h-3(h)');
-legend('h3');
-
-[H1, F1] = freqz(h1, 1, 256, 2);
-[H2, F2] = freqz(h2, 1, 256, 2);
-[H3, F3] = freqz(h3, 1, 256, 2);
-
-figure(2);
-subplot(3, 1, 1);
-stem(F1, abs(H1), 'b');
-title('roll OFF=0.2');
-xlabel('omega');
-ylabel('magnitude');
-legend('Multirate filters');
-
-subplot(3, 1, 2);
-stem(F2, abs(H2), 'k');
-title('roll OFF=0.4');
-xlabel('omega');
-ylabel('magnitude');
-legend('Multirate filters');
-
-subplot(3, 1, 3);
-stem(F3, abs(H3), 'r');
-title('roll OFF=0.6');
-xlabel('omega');
-ylabel('magnitude');
-title('Multirate filters');
+case 'L' :rdir = 0;  //Move towards right
+speedl = 0;
+speedr = 50;
+break;
+  }
+digitalWrite(LD, ldir);
+digitalWrite(RD, rdir);
+analogWrite(LS, speedl);
+analogWrite(RS, speedr);
+}

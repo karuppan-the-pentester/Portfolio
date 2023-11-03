@@ -1,0 +1,49 @@
+Addition
+
+MOV A,#Data1
+ADD A,#Data2
+MOV DPTR,#4500
+MOVX @ DPTR,A
+SJMP HERE
+
+
+Subtraction
+
+
+MOV A,#Data1
+SUBB A,#Data2
+MOV DPTR,#4500
+MOVX @ DPTR,A
+SJMP HERE
+
+
+
+Multiplication
+
+
+MOV A,#02
+MOV B,#03
+MUL A,B
+MOV DPTR,#4500
+MOVX @DPTR,A
+INC DPTR
+MOV A,B
+MOVX @DPTR,A
+SJMP HERE
+
+
+
+Division 
+
+
+MOV A,#08
+MOV B,#04
+DIV A,B
+MOV DPTR,#4500
+MOVX @DPTR,A
+INC DPTR
+MOV A,B
+MOVX @DPTR,A
+SJMP HERE
+
+

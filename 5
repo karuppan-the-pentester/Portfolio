@@ -1,92 +1,17 @@
-clc;
-clear all;
-close all;
+#include <LiquidCrystal.h>
+int Contrast=75;
+LiquidCrystallcd(12, 11, 5, 4, 3, 2);  
 
-rp = input('enter passband ripple');
-rs = input('enter stopband ripple');
-fp = input('enter passband frequency');
-fs = input('enter stopband frequency');
-f = input('enter the sampling frequency');
+ void setup()
+ {
+analogWrite(6,Contrast);
+lcd.begin(16, 2);
+  } 
+     void loop()
+ { 
+lcd.setCursor(0, 0);
+lcd.print("Only Innovative");
 
-wp = 2 * fp / f;
-ws = 2 * fs / f;
-[N, wn] = buttord(wp, ws, rp, rs);
-
-choice_filter = input('enter the type of filter 1.LPF 2.HPF 3.BPF 4.BSF');
-switch choice_filter
-    case 1
-        [B, A] = butter(N, wn);
-        [H, w] = freqz(B, A, 512);
-        m = 20 * log10(abs(H));
-        figure(1);
-        p = angle(H);
-
-        subplot(2, 1, 1);
-        plot(w, m);
-        xlabel('normalized frequency');
-        ylabel('magnitude in dB');
-        title('Low Pass Filter');
-
-        subplot(2, 1, 2);
-        plot(w, p);
-        xlabel('normalized frequency');
-        ylabel('phase in degree');
-
-
-    case 2
-        [B, A] = butter(N, wn, 'high');
-        [H, W] = freqz(B, A, 512);
-        m = 20 * log10(abs(H));
-        figure(2)
-
-        subplot(2, 1, 1);
-        plot(w, m);
-        xlabel('normalized frequency');
-        ylabel('magnitude in dB');
-
-        subplot(2, 1, 2);
-        plot(w, p);
-        xlabel('Normalized frequency');
-        ylabel('phase in degree');
-        title('high pass filter');
-
-
-    case 3
-        w1 = [wp ws];
-        [B, A] = butter(N, w1, 'bandpass');
-        [H, w] = freqz(B, A, 512);
-        m = 20 * log10(abs(h));
-        p = angle(H);
-        figure(3);
-
-        subplot(2, 1, 1);
-        plot(w, m);
-        xlabel('normalized frequency');
-        ylabel('magnitude in dB');
-
-        subplot(2, 1, 2);
-        plot(w, p);
-        xlabel('normalized frequency');
-        ylabel('phase in degree');
-        title('band pass filter');
-
-
-    case 4
-        w1 = [wp ws];
-        [B, A] = butter(N, w1, 'stop');
-        [H, W] = freqz(B, A, 512);
-        m = 20 * log10(abs(H));
-        p = angle(H);
-        figure(4);
-
-        subplot(2, 1, 1);
-        plot(w, m);
-        xlabel('normalized frequency');
-        ylabel('magnitude in dB');
-        
-        subplot(2, 1, 2);
-        plot(W, p);
-        xlabel('Normalized frequency');
-        ylabel('phase in degree');
-        title('band stop filter');
-end
+lcd.setCursor(0, 1);
+lcd.print("Subscribe");
+ }
