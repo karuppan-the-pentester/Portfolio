@@ -1,0 +1,19 @@
+import time
+import board
+import busio
+import adafruit_sht31d
+
+# Initialize I2C communication
+i2c = board.I2C()
+
+# Initialize the sensor
+sensor = adafruit_sht31d.SHT31D(i2c)
+
+# Continuously read and display temperature and humidity
+while True:
+    # Print temperature and humidity
+    print("Temperature: %.1f C" % sensor.temperature)
+    print("Humidity: %.1f %%" % sensor.relative_humidity)
+    
+    # Wait for 2 seconds before the next reading
+    time.sleep(2)

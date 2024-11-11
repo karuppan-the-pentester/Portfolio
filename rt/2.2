@@ -1,0 +1,98 @@
+#include <String.h>
+
+// Predefined commands to compare the string received from the voice control app
+#define START "start"
+#define FORWARD "forward"
+#define BACKWARD "backward"
+#define RIGHT "right"
+#define LEFT "left"
+#define STOP "stop"
+
+// Macro section
+#define LM 40   // Left motor
+#define RM 39   // Right motor
+#define LD 28   // Left motor direction pin
+#define RD 29   // Right motor direction pin
+
+// Global variables declaration
+int lmspeed = 0, speedl = 0, ldir = 0, rdir = 0;
+int rmspeed = 0, speedr = 0;
+char cmd[10] = {"\0"};
+char precmd[9][10] = {START, STOP, FORWARD, BACKWARD, LEFT, RIGHT};
+char ctl[9] = {'1', '2', '3', '4', '5', '6'};
+
+// Setup function
+void setup() {
+  Serial.begin(9600);
+  Serial1.begin(9600);
+  pinMode(LD, OUTPUT);
+  pinMode(RD, OUTPUT);
+}
+
+// Main loop
+void loop() {
+  int i = 0;
+  int k = -1;  // Initialize k variable to prevent uninitialized usage
+
+  // Check if data is available from Serial1 (voice control app)
+  if (Serial1.available()) {
+    Serial1.readBytes(cmd, 10);  // Read command
+    Serial.println(cmd);          // Print command to serial monitor
+  }
+
+  // To identify the command by comparing the received string with predefined commands
+  for (i = 0; i < 6; i++) {
+    if (strcmp(cmd, precmd[i]) == 0) {
+      k = i;  // Set k to the matched command index
+      break;
+    }
+  }
+
+  // Decision and parameters configuration part based on the received command
+  if (k != -1) {
+    switch (ctl[k]) {
+      case '1': 
+        lmspeed = 50;
+        rmspeed = 50;
+        digitalWrite(LD, LOW);   // Move forward (LD=LOW, RD=LOW)
+        digitalWrite(RD, LOW);
+        break;
+      case '2': 
+        speedl = 0;
+        speedr = 0;
+        break;
+      case '3': 
+        speedl = lmspeed;
+        speedr = rmspeed;
+        digitalWrite(LD, LOW);   // Move forward
+        digitalWrite(RD, LOW);
+        break;
+      case '4': 
+        speedl = lmspeed;
+        speedr = rmspeed;
+        digitalWrite(LD, HIGH);  // Move backward (LD=HIGH, RD=HIGH)
+        digitalWrite(RD, HIGH);
+        break;
+      case '5': 
+        speedl = 0;
+        speedr = rmspeed;
+        break;
+      case '6': 
+        speedr = 0;
+        speedl = lmspeed;
+        break;
+      default: 
+        speedl = 0;
+        speedr = 0;
+        break;
+    }
+  } else {
+    // If command is not matched, stop the motors
+    speedl = 0;
+    speedr = 0;
+  }
+
+  // Control the motors using PWM (analogWrite)
+  analogWrite(LM, speedl);
+  analogWrite(RM, speedr);
+}

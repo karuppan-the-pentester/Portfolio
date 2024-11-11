@@ -1,0 +1,38 @@
+import time
+import board
+import adafruit_tcs34725
+import RPi.GPIO as GPIO
+
+# Initialize I2C and color sensor
+i2c = board.I2C()
+sensor = adafruit_tcs34725.TCS34725(i2c)
+
+# Set up GPIO
+GPIO.setmode(GPIO.BCM)
+GPIO.setwarnings(False)
+
+while True:
+    try:
+        color = sensor.color
+        color_rgb = sensor.color_rgb_bytes
+        (Red, Green, Blue, CL) = sensor.color_raw
+        
+        # Check color conditions
+        if Green > Blue and Green > Red:
+            print("Green Color Detected")
+        elif Red > Blue and Red > Green:
+            print("Red Color Detected")
+        elif Blue > Red and Blue > Green:
+            print("Blue Color Detected")
+        else:
+            print("Specified color not Detected")
+        
+        time.sleep(2)
+    
+    except Exception as e:
+        print("Check Connection!", e)
+        time.sleep(2)
+        
+        # Re-initialize I2C and sensor
+        i2c = board.I2C()
+        sensor = adafruit_tcs34725.TCS34725(i2c)

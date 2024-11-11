@@ -1,0 +1,46 @@
+import sys
+sys.path.append('/home/pi/Adafruit-Raspberry-Pi-Python-Code-legacy/Adafruit_CircuitPython_SSD1306-main')
+
+import busio
+import board
+import time
+import digitalio
+from board import SCL, SDA
+from digitalio import Direction, Pull
+from PIL import Image, ImageDraw, ImageFont
+import adafruit_ssd1306
+
+# Set up the reset pin
+RESET_PIN = digitalio.DigitalInOut(board.D4)
+
+# Initialize I2C and OLED display
+i2c = board.I2C()
+oled = adafruit_ssd1306.SSD1306_I2C(128, 64, i2c, addr=0x3C, reset=RESET_PIN)
+
+# Clear Display
+oled.fill(0)
+oled.show()
+
+# Create blank image for drawing.
+image = Image.new("1", (oled.width, oled.height))
+draw = ImageDraw.Draw(image)
+
+# Load fonts
+font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf", 11)
+font2 = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf", 18)
+
+# Draw text on the display
+draw.text((0, 0), "*PSREC ECE*", font=font, fill=255)       # Line 1
+draw.text((0, 20), "mons", font=font2, fill=255)             # Line 2
+draw.text((0, 40), "**************", font=font2, fill=255)   # Line 3
+
+# Display image
+oled.image(image)
+oled.show()
+
+# Print to console
+print("PSREC ECE")
+print("mons")
+
+# Delay before ending the program
+time.sleep(10)
