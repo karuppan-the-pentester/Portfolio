@@ -1,0 +1,75 @@
+import cv2
+import numpy as np
+
+# Load the MobileNet-SSD model
+net = cv2.dnn.readNetFromCaffe("mobilenet_ssd.prototxt", "mobilenet_ssd.caffemodel")
+
+# Initialize video capture for camera (0 for the default camera)
+cap = cv2.VideoCapture(0)
+
+# Define minimum safe distance in pixels
+MIN_DISTANCE = 100
+
+# Function to calculate Euclidean distance between two points
+def get_distance(point1, point2):
+    return np.sqrt((point1[0] - point2[0])**2 + (point1[1] - point2[1])**2)
+
+# Loop through video frames
+while True:
+    ret, frame = cap.read()
+    if not ret:
+        break
+
+    # Resize frame and prepare blob for CNN
+    height, width = frame.shape[:2]
+    blob = cv2.dnn.blobFromImage(frame, 0.007843, (300, 300), (127.5, 127.5, 127.5), False, False)
+    net.setInput(blob)
+    detections = net.forward()
+
+    # Store detected persons' bounding boxes and centers
+    boxes = []
+    centers = []
+
+    # Process each detection
+    for i in range(detections.shape[2]):
+        confidence = detections[0, 0, i, 2]
+        if confidence > 0.5:  # Filter weak detections
+            class_id = int(detections[0, 0, i, 1])
+
+            # If the detected object is a person (class_id == 15 for person in MobileNet-SSD)
+            if class_id == 15:
+                box = detections[0, 0, i, 3:7] * np.array([width, height, width, height])
+                (startX, startY, endX, endY) = box.astype("int")
+
+                # Calculate center of the bounding box
+                centerX = int((startX + endX) / 2)
+                centerY = int((startY + endY) / 2)
+                centers.append((centerX, centerY))
+                boxes.append((startX, startY, endX, endY))
+
+                # Draw bounding box around person
+                cv2.rectangle(frame, (startX, startY), (endX, endY), (0, 255, 0), 2)
+                cv2.circle(frame, (centerX, centerY), 5, (0, 255, 0), -1)
+
+    # Check distances between people
+    for i in range(len(centers)):
+        for j in range(i + 1, len(centers)):
+            distance = get_distance(centers[i], centers[j])
+
+            # If distance is less than minimum threshold, trigger alert
+            if distance < MIN_DISTANCE:
+                # Draw a red line between them
+                cv2.line(frame, centers[i], centers[j], (0, 0, 255), 2)
+                cv2.putText(frame, "ALERT: Too close!", (centers[i][0], centers[i][1] - 10),
+                            cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
+
+    # Display the frame
+    cv2.imshow("Social Distance Alert", frame)
+
+    # Press 'q' to exit the loop
+    if cv2.waitKey(1) & 0xFF == ord('q'):
+        break
+
+# Release resources
+cap.release()
+cv2.destroyAllWindows()

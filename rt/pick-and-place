@@ -1,0 +1,66 @@
+#include <reg51.h>
+
+// Define control pins for movements
+sbit ARM_UP = P1^0;
+sbit ARM_DOWN = P1^1;
+sbit GRIPPER_OPEN = P1^2;
+sbit GRIPPER_CLOSE = P1^3;
+sbit BASE_ROTATE_LEFT = P1^4;
+sbit BASE_ROTATE_RIGHT = P1^5;
+
+// Delay function for timing
+void delay(unsigned int time) {
+    unsigned int i, j;
+    for (i = 0; i < time; i++)
+        for (j = 0; j < 1275; j++); // Adjust this for the required delay
+}
+
+// Function to pick up an object
+void pickUpObject() {
+    // Move arm down
+    ARM_DOWN = 1;
+    delay(1000);
+    ARM_DOWN = 0;
+
+    // Close gripper
+    GRIPPER_CLOSE = 1;
+    delay(1000);
+    GRIPPER_CLOSE = 0;
+
+    // Move arm up
+    ARM_UP = 1;
+    delay(1000);
+    ARM_UP = 0;
+}
+
+// Function to place the object
+void placeObject() {
+    // Rotate base to the right position
+    BASE_ROTATE_RIGHT = 1;
+    delay(2000); // Adjust delay as needed to reach desired position
+    BASE_ROTATE_RIGHT = 0;
+
+    // Move arm down
+    ARM_DOWN = 1;
+    delay(1000);
+    ARM_DOWN = 0;
+
+    // Open gripper to release object
+    GRIPPER_OPEN = 1;
+    delay(1000);
+    GRIPPER_OPEN = 0;
+
+    // Move arm up
+    ARM_UP = 1;
+    delay(1000);
+    ARM_UP = 0;
+}
+
+void main() {
+    while (1) {
+        pickUpObject();  // Pick the object
+        delay(2000);     // Delay before placing
+        placeObject();   // Place the object
+        delay(5000);     // Delay before the next cycle
+    }
+}
