@@ -1,0 +1,22 @@
+x=imread('/MATLAB Drive/peppers.jpg');
+z=rgb2gray(x);
+subplot(221);imshow(x);title('Original Image')
+subplot(222);imshow(z);title('Grayscale image')
+k=imresize(z,1/4);subplot(223);imshow(k);title('resized image')
+[r c]= size(z);
+a=1;
+
+for i=1: r
+    zz(a,:)=z(i,:);
+    zz(a+1,:)=z(i,:);
+    a=a+2;
+end
+
+b=1;
+for i=1:c
+    zz1(:,b)=zz(:,i);
+    zz1(:,b+1)=zz(:,i);
+    b=b+2;
+end
+
+subplot(224);imshow(zz1);title('Double the size of image')

@@ -1,0 +1,10 @@
+close all;
+clear all;
+clc;
+a=imread('pout.tif');
+b=[1 1 1;1 1 1;1 1 1];
+a1=imopen(a,b);
+a2=imclose(a,b);
+subplot(334);imshow(a),title('Original image');
+subplot(335);imshow(a1),title('Opened image');
+subplot(336);imshow(a2),title('Closed image');

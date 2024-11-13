@@ -1,0 +1,42 @@
+I = im2double(imread('Image_To_Read.tiff'));
+figure, imshow(I)
+Isizes = size(I);
+threshI = multithresh(I, 3);
+[m, n]=ginput(1);
+c = impixel(I, m, n);
+currPix = c(1);
+surr = [-1 0; 1 0; 0 -1; 0 1];
+mem = zeros(Isizes(1)*Isizes(2), 3);
+mem(1, :) = [m, n, currPix];
+regSize = 1;
+J = zeros(Isizes(1), Isizes(2));
+init = 1;
+posInList = 1;
+k=1;
+
+while(k==1)
+    for l=init:posInList
+        for j=1:4
+            m1 = m + surr(j,1);
+            n1 = n + surr(j,2);
+            check=(m1>=1)&&(n1>=1)&&(m1<=Isizes(1))&&(n1<=Isizes(2));
+            current = impixel(I, m1, n1);
+            currPix = current(1);
+            if(check && currPix<=threshI(2) && (J(m1, n1)==0))
+                posInList = posInList+1;
+                mem(posInList, :) = [m1, n1, currPix];
+                J(m1, n1) = 1;
+            end
+        end
+    end
+    if(posInList == init)
+        k = 0;
+    else
+        init = init+1;
+        m = mem(init, 1, :);
+        n = mem(init, 2, :);
+        k = 1;
+    end
+end
+
+imshow(J);

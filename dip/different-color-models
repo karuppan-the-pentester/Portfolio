@@ -1,0 +1,11 @@
+RGB = imread('board.tif');
+subplot(221);
+imshow(RGB);
+title('Original Image');
+YCBCR = rgb2ycbcr(RGB);
+subplot(222);
+imshow(RGB);
+title('Image in RGB Color Space');
+subplot(223);
+imshow(YCBCR);
+title('Image in YCbCr Color Space');

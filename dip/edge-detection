@@ -1,0 +1,12 @@
+I = imread('coins.png');
+subplot(221);
+imshow(I);
+title('Original Image');
+BW1 = edge(I,'sobel');
+subplot(222);
+imshow(BW1);
+title('Sobel Filter');
+BW2 = edge(I,'canny');
+subplot(223);
+imshow(BW2);
+title('Canny Filter');

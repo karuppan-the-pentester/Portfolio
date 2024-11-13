@@ -1,0 +1,25 @@
+close all;
+clear all;
+clc;
+im=imread('pout.tif');
+fc=10;
+imf = fftshift(fft2(im));
+[co,ro]=size(im);
+out = zeros(co,ro);
+cx = round(co/2);
+cy = round (ro/2);
+H = zeros(co,ro);
+
+for i = 1 : co
+    for j = 1 : ro
+        d = (i-cx).^2 + (j-cy).^2;
+        H(i,j) = exp(-d/2/fc/fc);
+    end
+end
+
+outf= imf.*H;
+out=abs(ifft2(outf));
+subplot(331);imshow(im);title('Original Image');
+subplot(332);imshow(uint8(out)), title('Gaussian Lowpass Filtered Image')
+subplot(333);imshow(H),title('2D View of H');
+subplot(334),surf(H), title('3D View of H')

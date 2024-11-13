@@ -1,0 +1,16 @@
+close all;
+clear all;
+clc;
+a=imread('cameraman.tif');
+b=[1 1 1;1 1 1;1 1 1];
+a1=imdilate(a,b);
+a2=imerode(a,b);
+subplot(331);
+imshow(a);
+title('Original image');
+subplot(332);
+imshow(a1);
+title('Dilated image')
+subplot(333);
+imshow(a2);
+title('Eroded image')

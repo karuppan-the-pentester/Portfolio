@@ -1,0 +1,11 @@
+RGB = imread('cameraman.tif');
+I = im2gray(RGB);
+J = dct2(I);
+imshow(log(abs(J)),[])
+colormap parula
+colorbar
+J(abs(J) < 10) = 0;
+K = idct2(J);
+K = rescale(K);
+montage({I,K})
+title('Original Grayscale Image (Left) and Processed Image (Right)');

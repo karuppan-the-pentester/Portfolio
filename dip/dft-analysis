@@ -1,0 +1,12 @@
+img = imread('cameraman.tif');
+Fimg = abs(fftshift(fft2(img)));
+figure
+mesh(Fimg)
+title('Mag. spectrum of image (3D)')
+figure
+subplot(121)
+imshow(img)
+title('Lena in Spatial domain')
+subplot(122)
+imshow(log(1+Fimg),[])
+title('Lena in freq. domain')
